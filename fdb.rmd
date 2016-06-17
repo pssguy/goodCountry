@@ -13,6 +13,8 @@ library(flexdashboard)
 library(readr)
 library(plotly)
 
+library(dplyr)
+
 # all data
 data <- read_csv("data/data2011.csv")
 data$Overall_Rank <- as.numeric(data$Overall_Rank)
@@ -66,23 +68,37 @@ Column
 
 info <- reactive({
   
+if(input$category=="Overall")  {
 df <- data[c(1:163),c(1,2,4:11)]
+df$hover <- with(df, paste(Country, '<br>', "Overall", Overall_Rank, "<br>", "Science/Tech", ST_Rank, "<br>",
+                                       "Culture", CU_Rank, "<br>", "Peace/Security", PS_Rank,
+                                       "<br>", "World Order", WO_Rank,  "<br>","Climate", PC_Rank, "<br>",
+                                       "Prosperity", PE_Rank,  "<br>","Health", HW_Rank))
+}
+  
+  (glimpse(df))
+  info=list(df=df)
+  return(info)
 
 })
 
 
 
-toplevel$hover <- with(toplevel, paste(Country, '<br>', "Overall", Overall_Rank, "<br>", "Science/Tech", ST_Rank, "<br>",
-                                       "Culture", CU_Rank, "<br>", "Peace/Security", PS_Rank,
-                                       "<br>", "World Order", WO_Rank,  "<br>","Climate", PC_Rank, "<br>",
-                                       "Prosperity", PE_Rank,  "<br>","Health", HW_Rank))
+# toplevel$hover <- with(toplevel, paste(Country, '<br>', "Overall", Overall_Rank, "<br>", "Science/Tech", ST_Rank, "<br>",
+#                                        "Culture", CU_Rank, "<br>", "Peace/Security", PS_Rank,
+#                                        "<br>", "World Order", WO_Rank,  "<br>","Climate", PC_Rank, "<br>",
+#                                        "Prosperity", PE_Rank,  "<br>","Health", HW_Rank))
 
-plot_ly(toplevel, z = Overall_Rank, text = hover, locations = ISOcode, type = 'choropleth',
+renderPlotly({
+  
+  req(info())
+  info()$df %>% 
+        plot_ly( z = Overall_Rank, text = hover, locations = ISOcode, type = 'choropleth',
         color = Overall_Rank, colors = 'RdYlGn', marker = list(line = l), showscale=F, reversescale = TRUE
 ) %>%
   layout(title = '2011 Good Country Overall Index<br>Source:<a href="">The Good Country</a>',
          geo = g)
-
+})
 ```
 
 
