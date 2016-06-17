@@ -62,7 +62,7 @@ radioButtons("category", label="Method of Media Selection",
 Column
 -----------------------------------------------------------------------
 
-### Chart
+###  <a href="https://goodcountry.org/index/about-the-index" target="_blank">The Good Country 2011 Index</a>
 
 ```{r munging}
 
@@ -96,7 +96,7 @@ renderPlotly({
         plot_ly( z = Overall_Rank, text = hover, locations = ISOcode, type = 'choropleth',
         color = Overall_Rank, colors = 'RdYlGn', marker = list(line = l), showscale=F, reversescale = TRUE
 ) %>%
-  layout(title = '2011 Good Country Overall Index<br>Source:<a href="">The Good Country</a>',
+  layout(title = 'Overall Index - Hover for Details',
          geo = g)
 })
 ```
