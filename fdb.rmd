@@ -1,0 +1,89 @@
+---
+title: "Untitled"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: columns
+    vertical_layout: fill
+runtime: shiny
+---
+
+```{r setup, include=FALSE}
+library(flexdashboard)
+
+library(readr)
+library(plotly)
+
+# all data
+data <- read_csv("data/data2011.csv")
+data$Overall_Rank <- as.numeric(data$Overall_Rank)
+
+# standard map criteria
+# light grey boundaries
+l <- list(color = toRGB("grey"), width = 0.5)
+
+# specify map projection/options
+g <- list(
+  showframe = FALSE,
+  showcoastlines = TRUE,
+  projection = list(type = 'robinson')
+)
+```
+
+
+Inputs {.sidebar data-width=325}
+-------------------------------------
+
+```{r inc munging}
+#includeMarkdown("info.md")
+hr()
+
+ 
+
+
+inputPanel(
+radioButtons("category", label="Method of Media Selection",
+             choices=c("Overall",
+                       "Science & Technology",
+                       "Culture",
+                       "Peace & Security",
+                       "World Order",
+                       "Planet & Climate",
+                       "Prosperity & Equality",
+                       "Health & Wellbeing"), inline=T)
+)
+
+
+```
+
+
+
+Column
+-----------------------------------------------------------------------
+
+### Chart
+
+```{r munging}
+
+info <- reactive({
+  
+df <- data[c(1:163),c(1,2,4:11)]
+
+})
+
+
+
+toplevel$hover <- with(toplevel, paste(Country, '<br>', "Overall", Overall_Rank, "<br>", "Science/Tech", ST_Rank, "<br>",
+                                       "Culture", CU_Rank, "<br>", "Peace/Security", PS_Rank,
+                                       "<br>", "World Order", WO_Rank,  "<br>","Climate", PC_Rank, "<br>",
+                                       "Prosperity", PE_Rank,  "<br>","Health", HW_Rank))
+
+plot_ly(toplevel, z = Overall_Rank, text = hover, locations = ISOcode, type = 'choropleth',
+        color = Overall_Rank, colors = 'RdYlGn', marker = list(line = l), showscale=F, reversescale = TRUE
+) %>%
+  layout(title = '2011 Good Country Overall Index<br>Source:<a href="">The Good Country</a>',
+         geo = g)
+
+```
+
+
+
