@@ -17,7 +17,7 @@ library(dplyr)
 
 # all data
 data <- read_csv("data/data2011.csv")
-data$Overall_Rank <- as.numeric(data$Overall_Rank)
+#data$Overall_Rank <- as.numeric(data$Overall_Rank)
 
 # standard map criteria
 # light grey boundaries
@@ -69,14 +69,34 @@ Column
 info <- reactive({
   
 if(input$category=="Overall")  {
-df <- data[c(1:163),c(1,2,4:11)]
+  print("enter overall")
+df <- data[c(1:163),c(1,2,3:10)]
+#df$topRank <- df$Overall_Rank
 df$hover <- with(df, paste(Country, '<br>', "Overall", Overall_Rank, "<br>", "Science/Tech", ST_Rank, "<br>",
                                        "Culture", CU_Rank, "<br>", "Peace/Security", PS_Rank,
                                        "<br>", "World Order", WO_Rank,  "<br>","Climate", PC_Rank, "<br>",
                                        "Prosperity", PE_Rank,  "<br>","Health", HW_Rank))
+
+} else if (input$category=="Science & Technology") {
+  # print("enter S&T")
+  # print(names(df))
+  # df$topRank <- NULL
+  # df$topRank <- df$ST_Rank
+df <- data[c(1:163),c(1,2,4,11:15)]
+glimpse(df)
+df$hover <- with(df, paste(Country, '<br>', "Overall", ST_Rank, "<br>", "Int Students", ST11, "<br>",
+                                       "Journal Exports", ST12, "<br>", "Publications", ST13,
+                                       "<br>", "Nobel Prizes", ST14,  "<br>","Patents", ST15))
+
+
 }
+
   
-  (glimpse(df))
+
+  
+  
+  
+ # (glimpse(df))
   info=list(df=df)
   return(info)
 
@@ -84,19 +104,29 @@ df$hover <- with(df, paste(Country, '<br>', "Overall", Overall_Rank, "<br>", "Sc
 
 
 
-# toplevel$hover <- with(toplevel, paste(Country, '<br>', "Overall", Overall_Rank, "<br>", "Science/Tech", ST_Rank, "<br>",
-#                                        "Culture", CU_Rank, "<br>", "Peace/Security", PS_Rank,
-#                                        "<br>", "World Order", WO_Rank,  "<br>","Climate", PC_Rank, "<br>",
-#                                        "Prosperity", PE_Rank,  "<br>","Health", HW_Rank))
-
 renderPlotly({
   
   req(info())
-  info()$df %>% 
+  
+  theTitle <- paste0(input$category," Index - Hover for Details")
+  
+  df <-info()$df
+  
+  if(input$category=="Overall")  {
+   
+  
+p <- df %>% 
         plot_ly( z = Overall_Rank, text = hover, locations = ISOcode, type = 'choropleth',
         color = Overall_Rank, colors = 'RdYlGn', marker = list(line = l), showscale=F, reversescale = TRUE
-) %>%
-  layout(title = 'Overall Index - Hover for Details',
+) 
+} else if (input$category=="Science & Technology") {
+  p <- df %>% 
+        plot_ly( z = ST_Rank, text = hover, locations = ISOcode, type = 'choropleth',
+        color = ST_Rank, colors = 'RdYlGn', marker = list(line = l), showscale=F, reversescale = TRUE
+) 
+}
+p %>%
+  layout(title = theTitle,
          geo = g)
 })
 ```
