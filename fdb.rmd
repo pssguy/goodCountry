@@ -2,7 +2,7 @@
 title: "Untitled"
 output: 
   flexdashboard::flex_dashboard:
-    orientation: columns
+    orientation: rows
     vertical_layout: fill
 runtime: shiny
 ---
@@ -12,6 +12,7 @@ library(flexdashboard)
 
 library(readr)
 library(plotly)
+library(DT)
 
 library(dplyr)
 
@@ -59,7 +60,7 @@ radioButtons("category", label="Method of Media Selection",
 
 
 
-Column
+Row
 -----------------------------------------------------------------------
 
 ###  <a href="https://goodcountry.org/index/about-the-index" target="_blank">The Good Country 2011 Index</a>
@@ -71,27 +72,79 @@ info <- reactive({
 if(input$category=="Overall")  {
   print("enter overall")
 df <- data[c(1:163),c(1,2,3:10)]
-#df$topRank <- df$Overall_Rank
+
 df$hover <- with(df, paste(Country, '<br>', "Overall", Overall_Rank, "<br>", "Science/Tech", ST_Rank, "<br>",
                                        "Culture", CU_Rank, "<br>", "Peace/Security", PS_Rank,
                                        "<br>", "World Order", WO_Rank,  "<br>","Climate", PC_Rank, "<br>",
                                        "Prosperity", PE_Rank,  "<br>","Health", HW_Rank))
 
 } else if (input$category=="Science & Technology") {
-  # print("enter S&T")
-  # print(names(df))
-  # df$topRank <- NULL
-  # df$topRank <- df$ST_Rank
+
 df <- data[c(1:163),c(1,2,4,11:15)]
-glimpse(df)
+
 df$hover <- with(df, paste(Country, '<br>', "Overall", ST_Rank, "<br>", "Int Students", ST11, "<br>",
                                        "Journal Exports", ST12, "<br>", "Publications", ST13,
                                        "<br>", "Nobel Prizes", ST14,  "<br>","Patents", ST15))
 
 
+} else if (input$category=="Culture") {
+
+df <- data[c(1:163),c(1,2,5,16:20)]
+
+df$hover <- with(df, paste(Country, '<br>', "Overall", CU_Rank, "<br>", "Creative Goods Exports", CU21, "<br>",
+                                       "Creative Services Exports", CU22, "<br>", "UNESCO dues in arrears", CU23,
+                                       "<br>", "Freedom of Movement", CU24,  "<br>","Press Freedom", CU25))
+
+
+} else if (input$category=="Peace & Security") {
+
+df <- data[c(1:163),c(1,2,6,21:25)]
+
+df$hover <- with(df, paste(Country, '<br>', "Overall", PS_Rank, "<br>", "Peacekeeping Troops", PS31, "<br>",
+                                       "Peacekeeping Dues Arrears", PS32, "<br>", "International Conflicts", PS33,
+                                       "<br>", "Arms Exports", PS34,  "<br>","Internet Security", PS35))
+
+
+}  else if (input$category=="World Order") {
+
+df <- data[c(1:163),c(1,2,7,26:30)]
+
+df$hover <- with(df, paste(Country, '<br>', "Overall", WO_Rank, "<br>", "Charity Giving", WO41, "<br>",
+                                       "Refugees Hosted", WO42, "<br>", "Refugees Generated", WO43,
+                                       "<br>", "Birth Rate", WO44,  "<br>","UN Treaties Signed", WO45))
+
+
 }
 
-  
+  else if (input$category=="Planet & Climate") {
+
+df <- data[c(1:163),c(1,2,8,31:35)]
+
+df$hover <- with(df, paste(Country, '<br>', "Overall", PC_Rank, "<br>", "Ecological Footprint", PC51, "<br>",
+                                       "Reforestation since 1992", PC52, "<br>", "HazPest Exports", PC53,
+                                       "<br>", "CO2 Emissions", PC54,  "<br>","Ozone", PC55))
+
+
+}
+else if (input$category=="Prosperity & Equality") {
+
+df <- data[c(1:163),c(1,2,9,36:40)]
+
+df$hover <- with(df, paste(Country, '<br>', "Overall", PE_Rank, "<br>", "Open Trading", PE61, "<br>",
+                                       "UN Volunteers Abroad", PE62, "<br>", "Fairtrade market size", PE63,
+                                       "<br>", "FDI Outflows", PE64,  "<br>","Development Assistance", PE65))
+
+
+} else if (input$category=="Health & Wellbeing") {
+
+df <- data[c(1:163),c(1,2,10,41:45)]
+
+df$hover <- with(df, paste(Country, '<br>', "Overall", HW_Rank, "<br>", "Food Aid", HW71, "<br>",
+                                       "Pharmaceutical exports", HW72, "<br>", "Voluntary excess donations to the WHO", HW73,
+                                       "<br>", "Humanitarian aid donations", HW74,  "<br>","Int. Health Regs Compliance", HW75))
+
+
+}
 
   
   
@@ -124,7 +177,46 @@ p <- df %>%
         plot_ly( z = ST_Rank, text = hover, locations = ISOcode, type = 'choropleth',
         color = ST_Rank, colors = 'RdYlGn', marker = list(line = l), showscale=F, reversescale = TRUE
 ) 
+}  else if (input$category=="Culture") {
+  p <- df %>% 
+        plot_ly( z = CU_Rank, text = hover, locations = ISOcode, type = 'choropleth',
+        color = CU_Rank, colors = 'RdYlGn', marker = list(line = l), showscale=F, reversescale = TRUE
+) 
+} else if (input$category=="Peace & Security") {
+  p <- df %>% 
+        plot_ly( z = PS_Rank, text = hover, locations = ISOcode, type = 'choropleth',
+        color = PS_Rank, colors = 'RdYlGn', marker = list(line = l), showscale=F, reversescale = TRUE
+) 
 }
+  
+  else if (input$category=="World Order") {
+  p <- df %>% 
+        plot_ly( z = WO_Rank, text = hover, locations = ISOcode, type = 'choropleth',
+        color = WO_Rank, colors = 'RdYlGn', marker = list(line = l), showscale=F, reversescale = TRUE
+) 
+  }
+  
+   else if (input$category=="Planet & Climate") {
+  p <- df %>% 
+        plot_ly( z = PC_Rank, text = hover, locations = ISOcode, type = 'choropleth',
+        color = PC_Rank, colors = 'RdYlGn', marker = list(line = l), showscale=F, reversescale = TRUE
+) 
+   }
+  
+     else if (input$category=="Prosperity & Equality") {
+  p <- df %>% 
+        plot_ly( z = PE_Rank, text = hover, locations = ISOcode, type = 'choropleth',
+        color = PE_Rank, colors = 'RdYlGn', marker = list(line = l), showscale=F, reversescale = TRUE
+) 
+     }
+  
+       else if (input$category=="Health & Wellbeing") {
+  p <- df %>% 
+        plot_ly( z = HW_Rank, text = hover, locations = ISOcode, type = 'choropleth',
+        color = HW_Rank, colors = 'RdYlGn', marker = list(line = l), showscale=F, reversescale = TRUE
+) 
+}
+  
 p %>%
   layout(title = theTitle,
          geo = g)
@@ -132,4 +224,20 @@ p %>%
 ```
 
 
+Row
+-----------------------------------------------------------------------
 
+``` {r}
+
+DT::renderDataTable({
+  
+  (glimpse(info()$df))
+  
+  info()$df %>% 
+  DT::datatable(class='compact stripe hover row-border order-column',rownames=TRUE,options= list(paging = FALSE, searching = FALSE,info=FALSE))
+    
+})
+
+
+
+```
