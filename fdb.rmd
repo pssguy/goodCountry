@@ -2,7 +2,7 @@
 title: "Untitled"
 output: 
   flexdashboard::flex_dashboard:
-    orientation: rows
+    orientation: columns
     vertical_layout: fill
 runtime: shiny
 ---
@@ -37,7 +37,7 @@ Inputs {.sidebar data-width=325}
 -------------------------------------
 
 ```{r inc munging}
-#includeMarkdown("info.md")
+includeMarkdown("info.md")
 hr()
 
  
@@ -60,7 +60,7 @@ radioButtons("category", label="Method of Media Selection",
 
 
 
-Row
+Column
 -----------------------------------------------------------------------
 
 ###  <a href="https://goodcountry.org/index/about-the-index" target="_blank">The Good Country 2011 Index</a>
@@ -224,16 +224,24 @@ p %>%
 ```
 
 
-Row
+Column
 -----------------------------------------------------------------------
 
 ``` {r}
 
 DT::renderDataTable({
   
-  (glimpse(info()$df))
-  
-  info()$df %>% 
+ if(input$category=="Overall")  {
+df <-  info()$df %>% 
+    select(Country,Science=ST_Rank,Culture=CU_Rank,Peace=PS_Rank,Order=WO_Rank,Climate=PC_Rank,Prosperity=PE_Rank,Health=HW_Rank)
+
+} else if (input$category=="Science & Technology") {
+  df <-  info()$df %>% 
+    arrange(ST_Rank) %>% 
+  select(Country,ST11,ST12,ST13,ST14,ST15)
+}
+
+df %>% 
   DT::datatable(class='compact stripe hover row-border order-column',rownames=TRUE,options= list(paging = FALSE, searching = FALSE,info=FALSE))
     
 })
