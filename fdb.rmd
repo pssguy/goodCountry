@@ -1,8 +1,10 @@
 ---
-title: "Untitled"
+title: "The Good Country"
 output: 
   flexdashboard::flex_dashboard:
     orientation: columns
+    social: [ menu ]
+    #source_code: embed
     vertical_layout: fill
 runtime: shiny
 ---
@@ -14,11 +16,14 @@ library(readr)
 library(plotly)
 library(DT)
 
+library(vembedr)
+
 library(dplyr)
 
 # all data
 data <- read_csv("data/data2011.csv")
 #data$Overall_Rank <- as.numeric(data$Overall_Rank)
+glossary <- read_csv("data/glossary.csv")
 
 # standard map criteria
 # light grey boundaries
@@ -33,18 +38,19 @@ g <- list(
 ```
 
 
-Inputs {.sidebar data-width=325}
+Inputs {.sidebar data-width=375}
 -------------------------------------
 
 ```{r inc munging}
 includeMarkdown("info.md")
 hr()
-
- 
+embed_youtube("1X7fZoDs9KU", width=350, query = list(start = secs("11m12s")))
+hr()
+includeMarkdown("licence.md") 
 
 
 inputPanel(
-radioButtons("category", label="Method of Media Selection",
+radioButtons("category", label="Select Category",
              choices=c("Overall",
                        "Science & Technology",
                        "Culture",
@@ -60,10 +66,10 @@ radioButtons("category", label="Method of Media Selection",
 
 
 
-Column
+Column {data-width=3 }
 -----------------------------------------------------------------------
 
-###  <a href="https://goodcountry.org/index/about-the-index" target="_blank">The Good Country 2011 Index</a>
+###  {.no-title}
 
 ```{r munging}
 
@@ -80,7 +86,7 @@ df$hover <- with(df, paste(Country, '<br>', "Overall", Overall_Rank, "<br>", "Sc
 
 } else if (input$category=="Science & Technology") {
 
-df <- data[c(1:163),c(1,2,4,11:15)]
+df <- data[c(1:163),c(1,2,4,11:15,46)]
 
 df$hover <- with(df, paste(Country, '<br>', "Overall", ST_Rank, "<br>", "Int Students", ST11, "<br>",
                                        "Journal Exports", ST12, "<br>", "Publications", ST13,
@@ -89,7 +95,7 @@ df$hover <- with(df, paste(Country, '<br>', "Overall", ST_Rank, "<br>", "Int Stu
 
 } else if (input$category=="Culture") {
 
-df <- data[c(1:163),c(1,2,5,16:20)]
+df <- data[c(1:163),c(1,2,5,16:20,47)]
 
 df$hover <- with(df, paste(Country, '<br>', "Overall", CU_Rank, "<br>", "Creative Goods Exports", CU21, "<br>",
                                        "Creative Services Exports", CU22, "<br>", "UNESCO dues in arrears", CU23,
@@ -98,7 +104,7 @@ df$hover <- with(df, paste(Country, '<br>', "Overall", CU_Rank, "<br>", "Creativ
 
 } else if (input$category=="Peace & Security") {
 
-df <- data[c(1:163),c(1,2,6,21:25)]
+df <- data[c(1:163),c(1,2,6,21:25,48)]
 
 df$hover <- with(df, paste(Country, '<br>', "Overall", PS_Rank, "<br>", "Peacekeeping Troops", PS31, "<br>",
                                        "Peacekeeping Dues Arrears", PS32, "<br>", "International Conflicts", PS33,
@@ -107,7 +113,7 @@ df$hover <- with(df, paste(Country, '<br>', "Overall", PS_Rank, "<br>", "Peaceke
 
 }  else if (input$category=="World Order") {
 
-df <- data[c(1:163),c(1,2,7,26:30)]
+df <- data[c(1:163),c(1,2,7,26:30,49)]
 
 df$hover <- with(df, paste(Country, '<br>', "Overall", WO_Rank, "<br>", "Charity Giving", WO41, "<br>",
                                        "Refugees Hosted", WO42, "<br>", "Refugees Generated", WO43,
@@ -118,7 +124,7 @@ df$hover <- with(df, paste(Country, '<br>', "Overall", WO_Rank, "<br>", "Charity
 
   else if (input$category=="Planet & Climate") {
 
-df <- data[c(1:163),c(1,2,8,31:35)]
+df <- data[c(1:163),c(1,2,8,31:35,50)]
 
 df$hover <- with(df, paste(Country, '<br>', "Overall", PC_Rank, "<br>", "Ecological Footprint", PC51, "<br>",
                                        "Reforestation since 1992", PC52, "<br>", "HazPest Exports", PC53,
@@ -128,7 +134,7 @@ df$hover <- with(df, paste(Country, '<br>', "Overall", PC_Rank, "<br>", "Ecologi
 }
 else if (input$category=="Prosperity & Equality") {
 
-df <- data[c(1:163),c(1,2,9,36:40)]
+df <- data[c(1:163),c(1,2,9,36:40,51)]
 
 df$hover <- with(df, paste(Country, '<br>', "Overall", PE_Rank, "<br>", "Open Trading", PE61, "<br>",
                                        "UN Volunteers Abroad", PE62, "<br>", "Fairtrade market size", PE63,
@@ -137,7 +143,7 @@ df$hover <- with(df, paste(Country, '<br>', "Overall", PE_Rank, "<br>", "Open Tr
 
 } else if (input$category=="Health & Wellbeing") {
 
-df <- data[c(1:163),c(1,2,10,41:45)]
+df <- data[c(1:163),c(1,2,10,41:45,52)]
 
 df$hover <- with(df, paste(Country, '<br>', "Overall", HW_Rank, "<br>", "Food Aid", HW71, "<br>",
                                        "Pharmaceutical exports", HW72, "<br>", "Voluntary excess donations to the WHO", HW73,
@@ -224,8 +230,13 @@ p %>%
 ```
 
 
-Column
+Column {data-width=2 .tabset}
 -----------------------------------------------------------------------
+
+<!-- Row {data-height=5} -->
+<!-- ------------------------------------- -->
+
+### 2011 index 
 
 ``` {r}
 
@@ -238,14 +249,75 @@ df <-  info()$df %>%
 } else if (input$category=="Science & Technology") {
   df <-  info()$df %>% 
     arrange(ST_Rank) %>% 
-  select(Country,ST11,ST12,ST13,ST14,ST15)
-}
+  select(Country,Total=ST,ST11,ST12,ST13,ST14,ST15)
+  
+} else if (input$category=="Culture") {
+  df <-  info()$df %>% 
+    arrange(CU_Rank) %>% 
+  select(Country,Total=CU,CU21,CU22,CU23,CU24,CU25)
 
-df %>% 
-  DT::datatable(class='compact stripe hover row-border order-column',rownames=TRUE,options= list(paging = FALSE, searching = FALSE,info=FALSE))
+  
+} else if (input$category=="Peace & Security") {
+  df <-  info()$df %>% 
+    arrange(PS_Rank) %>% 
+  select(Country,Total=PS,PS31,PS32,PS33,PS34,PS35)
+  
+} else if (input$category=="World Order") {
+  df <-  info()$df %>% 
+    arrange(WO_Rank) %>% 
+  select(Country,Total=WO,WO41,WO42,WO43,WO44,WO45)
+
+    
+} else if (input$category=="Planet & Climate") {
+  df <-  info()$df %>% 
+    arrange(PC_Rank) %>% 
+  select(Country,Total=PC,PC51,PC52,PC53,PC54,PC55)
+
+  
+} else if (input$category=="Prosperity & Equality") {
+  df <-  info()$df %>% 
+    arrange(PE_Rank) %>% 
+    mutate(PE=round(PE,2),
+           PE61=round(PE61,2),
+           PE62=round(PE62,2),
+           PE63=round(PE63,2),
+           PE64=round(PE64,2),
+           PE65=round(PE65,2)) %>% 
+  select(Country,Total=PE,PE61,PE62,PE63,PE64,PE65)
+
+  
+} else if (input$category=="Health & Wellbeing") {
+  df <-  info()$df %>% 
+    arrange(HW_Rank) %>% 
+  select(Country,Total=HW,HW71,HW72,HW73,HW74,HW75)
+}
+  
+  df %>% 
+  DT::datatable(class='compact stripe hover row-border order-column',rownames=TRUE,options= list(pageLength = 20, paging = TRUE, searching = TRUE,info=FALSE))
     
 })
 
 
+
+```
+
+
+<!-- Row {data-height=1} -->
+<!-- ------------------------------------- -->
+
+### Glossary 
+
+
+<!-- For more detailed information on codes refer to this [Google Sheet](https://docs.google.com/spreadsheets/d/1SPeyQBIRYqXRIczMs5xixd329u-rFONvf4Wbi1eC_iI/edit#gid=544960824) -->
+
+``` {r glossary}
+
+includeMarkdown("index.md")
+
+
+DT::renderDataTable({
+  glossary %>%
+DT::datatable(class='compact stripe hover row-border order-column',rownames=FALSE,options= list(pageLength=7,paging = TRUE, searching = TRUE,info=FALSE))
+})
 
 ```

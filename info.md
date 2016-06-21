@@ -1,6 +1,7 @@
-[The Good Country 2011 Index](https://goodcountry.org/index/about-the-index" target="_blank) aspires to measure what each country on earth contributes to the common good of humanity, and what it takes away, relative to its size
+[The Good Country Index](https://goodcountry.org/index/about-the-index) aspires to measure what each country on earth contributes to the common good of humanity, and what it takes away, relative to its size
 
 Devised by [Simon Anholt](https://goodcountry.org/simon-anholt)
-and created by [Robert Govers] (http://rgovers.com/ )it utilizes a wide range of data from [UN and other sources](https://goodcountry.org/index/source-data)
+and developed by [Robert Govers] (http://rgovers.com/) it utilizes a wide range of data from [UN and other sources](https://goodcountry.org/index/source-data). 
 
-The data is covered by a [Creative Commons Attribution-NonCommercial-ShareAlike International License](http://creativecommons.org/licenses/by-nc-sa/4.0/)
+Here is a [TED talk](https://www.youtube.com/watch?v=1X7fZoDs9KU) about the first version, broadly based on 2010 data
+

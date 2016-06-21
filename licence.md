@@ -1,0 +1,1 @@
+The data is covered by a [Creative Commons Attribution-NonCommercial-ShareAlike International License](http://creativecommons.org/licenses/by-nc-sa/4.0/)
