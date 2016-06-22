@@ -2,6 +2,7 @@
 title: "The Good Country"
 output: 
   flexdashboard::flex_dashboard:
+    theme: flatly
     orientation: columns
     social: [ menu ]
     #source_code: embed
@@ -20,9 +21,8 @@ library(vembedr)
 
 library(dplyr)
 
-# all data
+# data imports
 data <- read_csv("data/data2011.csv")
-#data$Overall_Rank <- as.numeric(data$Overall_Rank)
 glossary <- read_csv("data/glossary.csv")
 
 # standard map criteria
@@ -41,12 +41,12 @@ g <- list(
 Inputs {.sidebar data-width=375}
 -------------------------------------
 
-```{r inc munging}
+```{r selection}
 includeMarkdown("info.md")
-hr()
+
 embed_youtube("1X7fZoDs9KU", width=350, query = list(start = secs("11m12s")))
-hr()
-includeMarkdown("licence.md") 
+
+
 
 
 inputPanel(
@@ -61,6 +61,7 @@ radioButtons("category", label="Select Category",
                        "Health & Wellbeing"), inline=T)
 )
 
+includeMarkdown("licence.md") 
 
 ```
 
